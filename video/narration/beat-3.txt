@@ -1,0 +1,1 @@
+One orchestrator delegates to three specialists: research, docs, and scheduler, each with a narrow set of tools. It never touches the data itself. It delegates, and gates.

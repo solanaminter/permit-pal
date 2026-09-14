@@ -1,0 +1,1 @@
+Phase two: the docs agent assembles the checklist, generates the packet, and validates it. Validation: PASS.

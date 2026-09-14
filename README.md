@@ -2,6 +2,12 @@
 
 **A background multi-agent system that shepherds a homeowner through a home-improvement permit application end-to-end — with a human approving every critical step.**
 
+## Demo
+
+Watch the narrated explainer — how Permit Pal works, end to end (~75 seconds):
+
+[Watch the demo video](https://github.com/solanaminter/permit-pal/blob/master/assets/permit-pal-demo.mp4)
+
 Built for the **Agents for Humans Hackathon (AWS)** — Everyday track. Pure [Strands Agents SDK](https://github.com/strands-agents/sdk-python), multi-agent orchestrator pattern, human-in-the-loop governance, and a deterministic eval harness.
 
 ## The problem

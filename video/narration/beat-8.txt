@@ -1,0 +1,1 @@
+The proof: a thirteen-step audit trail, three out of three approvals, twenty-nine out of twenty-nine evals. The demo runs offline on a deterministic heuristic model, and the same agents swap to a live Bedrock model. One command: dot venv slash bin slash python demo dot py.

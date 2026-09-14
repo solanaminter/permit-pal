@@ -1,0 +1,1 @@
+Meet Permit Pal: a background multi-agent system on the Strands Agents SDK that shepherds a homeowner through the whole application, end to end.

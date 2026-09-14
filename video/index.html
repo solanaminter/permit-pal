@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Permit Pal — narrated demo</title>
+    <script src="vendor/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Space Grotesk";
+        src: url("fonts/SpaceGrotesk.ttf") format("truetype");
+        font-weight: 300 700;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("fonts/Inter.ttf") format("truetype");
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "DejaVu Sans Mono";
+        src: url("fonts/DejaVuSansMono.ttf") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "DejaVu Sans Mono";
+        src: url("fonts/DejaVuSansMono-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-display: swap;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1920px; height: 1080px; overflow: hidden;
+        background: #05080f;
+      }
+      #root {
+        position: relative; width: 100%; height: 100%; overflow: hidden;
+        background:
+          radial-gradient(1200px 700px at 78% 12%, rgba(46,230,168,0.07), transparent 60%),
+          radial-gradient(1000px 800px at 12% 88%, rgba(125,211,252,0.05), transparent 60%),
+          #05080f;
+        color: #eaf2f1;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .clip { position: absolute; inset: 0; overflow: hidden; }
+      .decor { position: absolute; inset: 0; pointer-events: none; }
+      .gridbg {
+        position: absolute; inset: 0; opacity: 0.5;
+        background-image:
+          linear-gradient(rgba(148,178,190,0.055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148,178,190,0.055) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(1200px 800px at 50% 45%, black 30%, transparent 85%);
+        -webkit-mask-image: radial-gradient(1200px 800px at 50% 45%, black 30%, transparent 85%);
+      }
+      .glow {
+        position: absolute; width: 900px; height: 900px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(46,230,168,0.10), transparent 65%);
+        filter: blur(10px);
+      }
+      .gring {
+        position: absolute; border-radius: 50%; pointer-events: none;
+        border: 1px solid rgba(46,230,168,0.12);
+      }
+      .gring.alt { border-color: rgba(125,211,252,0.10); }
+      .stage { position: absolute; inset: 0; display: flex; }
+      .kicker {
+        font-family: "Space Grotesk", sans-serif; font-weight: 500;
+        font-size: 22px; letter-spacing: 0.38em; text-transform: uppercase;
+        color: #2ee6a8;
+      }
+      .beat-title {
+        font-family: "Space Grotesk", sans-serif; font-weight: 700;
+        font-size: 88px; line-height: 1.04; letter-spacing: -0.025em; color: #f2f7f6;
+      }
+      .beat-sub { font-size: 30px; line-height: 1.45; color: #9db4bc; font-weight: 400; }
+      .beat-sub strong { color: #eaf2f1; font-weight: 600; }
+      .card {
+        background: #0d1526; border: 1px solid rgba(148,178,190,0.16);
+        border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+      }
+      .chip {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-family: "Space Grotesk", sans-serif; font-size: 21px; font-weight: 500;
+        color: #cfe3dc; background: rgba(46,230,168,0.08);
+        border: 1px solid rgba(46,230,168,0.28); border-radius: 999px;
+        padding: 12px 24px;
+      }
+      .chip .dot { width: 10px; height: 10px; border-radius: 50%; background: #2ee6a8; }
+      .chip.amber { color: #f6d48a; background: rgba(245,185,66,0.08); border-color: rgba(245,185,66,0.35); }
+      .chip.amber .dot { background: #f5b942; }
+      .mono { font-family: "DejaVu Sans Mono", "Liberation Mono", monospace; }
+      .toolchip {
+        font-family: "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 20px;
+        color: #8fd8b8; background: #08120e; border: 1px dashed rgba(46,230,168,0.4);
+        border-radius: 12px; padding: 10px 18px;
+      }
+      /* ---------- beat 1 ---------- */
+      #b1-left { width: 980px; padding: 150px 0 0 130px; }
+      #b1-left .beat-title { margin: 28px 0 26px; max-width: 820px; }
+      #b1-pdfs { position: absolute; right: 130px; top: 200px; width: 560px; }
+      .pdfcard {
+        display: flex; align-items: center; gap: 22px;
+        background: #0d1526; border: 1px solid rgba(148,178,190,0.16);
+        border-radius: 18px; padding: 26px 30px; margin-bottom: 26px;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      }
+      .pdfbadge {
+        font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 20px;
+        color: #ff8f8f; background: rgba(255,120,120,0.10);
+        border: 1px solid rgba(255,120,120,0.35); border-radius: 10px; padding: 10px 16px;
+      }
+      .pdffile { font-size: 26px; color: #dfe9e7; font-weight: 500; }
+      .pdfmeta { font-size: 19px; color: #7d9299; margin-top: 4px; }
+      #b1-chips { position: absolute; left: 130px; bottom: 120px; display: flex; gap: 18px; }
+      /* ---------- beat 2 ---------- */
+      #b2-stage { flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      #b2-mark { width: 120px; height: 120px; margin-bottom: 34px; }
+      #b2-title { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 150px; letter-spacing: -0.03em; line-height: 1; }
+      #b2-title .accent { color: #2ee6a8; }
+      #b2-sub { font-size: 32px; color: #9db4bc; margin-top: 30px; max-width: 1100px; line-height: 1.5; }
+      #b2-sub strong { color: #eaf2f1; }
+      #b2-chips { display: flex; gap: 18px; margin-top: 44px; }
+      #orbit { position: absolute; left: 50%; top: 44%; width: 760px; height: 760px; margin: -380px 0 0 -380px; pointer-events: none; }
+      .orbit-dot { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #2ee6a8; box-shadow: 0 0 24px #2ee6a8; }
+      .orbit-ring { position: absolute; inset: 0; border: 1px solid rgba(46,230,168,0.18); border-radius: 50%; }
+      /* ---------- beat 3 ---------- */
+      #b3-stage { flex-direction: column; align-items: center; padding-top: 92px; }
+      #b3-stage .beat-title { font-size: 72px; text-align: center; margin: 22px 0 40px; }
+      #b3-card { background: #f2f5f7; border-radius: 26px; padding: 26px; box-shadow: 0 40px 100px rgba(0,0,0,0.55); }
+      #b3-kburn { width: 1180px; height: 640px; overflow: hidden; border-radius: 14px; }
+      #b3-kburn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #b3-chips { display: flex; gap: 18px; margin-top: 36px; }
+      /* ---------- beat 4 ---------- */
+      #b4-stage { align-items: center; padding: 0 130px; gap: 90px; }
+      #b4-left { width: 760px; }
+      #b4-left .beat-title { margin: 28px 0 26px; font-size: 80px; }
+      #kb-card { width: 830px; padding: 46px 50px; }
+      #kb-card h3 { font-family: "Space Grotesk", sans-serif; font-size: 26px; font-weight: 600; color: #eaf2f1; margin-bottom: 8px; }
+      #kb-card .kb-sub { font-size: 21px; color: #7d9299; margin-bottom: 30px; }
+      .reqrow { display: flex; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid rgba(148,178,190,0.12); font-size: 24px; color: #dfe9e7; }
+      .reqrow .tick { width: 34px; height: 34px; border-radius: 50%; background: rgba(46,230,168,0.12); border: 1px solid rgba(46,230,168,0.5); color: #2ee6a8; display: grid; place-items: center; font-size: 20px; font-weight: 700; flex: none; }
+      .reqrow .rid { margin-left: auto; font-family: "DejaVu Sans Mono", monospace; font-size: 18px; color: #7d9299; }
+      #b4-tool { margin-top: 28px; }
+      /* ---------- beat 5 ---------- */
+      #b5-stage { flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      #b5-stage .beat-title { margin: 28px 0 20px; max-width: 1300px; }
+      #b5-stage .beat-sub { max-width: 1050px; }
+      #gates { display: flex; align-items: center; gap: 34px; margin-top: 64px; }
+      .gate {
+        width: 300px; padding: 34px 20px 30px; text-align: center;
+        background: #141009; border: 1px solid rgba(245,185,66,0.4); border-radius: 20px;
+      }
+      .gate .gnum { font-family: "Space Grotesk", sans-serif; font-size: 20px; letter-spacing: 0.25em; color: #f5b942; }
+      .gate .gname { font-family: "Space Grotesk", sans-serif; font-size: 30px; font-weight: 700; color: #f6d48a; margin: 12px 0 8px; }
+      .gate .gflow { font-size: 19px; color: #9d8f6f; }
+      .gate-arrow { font-size: 44px; color: rgba(245,185,66,0.55); font-weight: 300; }
+      #b5-note { margin-top: 52px; display: flex; gap: 18px; }
+      /* ---------- beat 6 ---------- */
+      #b6-stage { align-items: center; padding: 0 130px; gap: 90px; }
+      #b6-left { width: 700px; }
+      #b6-left .beat-title { margin: 28px 0 26px; font-size: 80px; }
+      .checkrow { display: flex; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(148,178,190,0.12); }
+      .checkrow .box { width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(46,230,168,0.5); background: rgba(46,230,168,0.08); display: grid; place-items: center; color: #2ee6a8; font-size: 24px; font-weight: 700; flex: none; }
+      .checkrow .tname { font-family: "DejaVu Sans Mono", monospace; font-size: 25px; color: #dfe9e7; }
+      #packet-card { width: 780px; padding: 54px 54px 160px; position: relative; text-align: center; }
+      #packet-card .fname { font-family: "DejaVu Sans Mono", monospace; font-size: 25px; color: #eaf2f1; word-break: break-all; line-height: 1.6; }
+      #packet-card .fmeta { font-size: 20px; color: #7d9299; margin-top: 14px; }
+      #pass-stamp {
+        position: absolute; right: 44px; bottom: 40px; opacity: 0;
+        font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 44px; letter-spacing: 0.12em;
+        color: #2ee6a8; border: 4px solid #2ee6a8; border-radius: 14px; padding: 10px 26px;
+        background: rgba(46,230,168,0.08); box-shadow: 0 0 40px rgba(46,230,168,0.25);
+      }
+      #pass-stamp .tilt { display: inline-block; transform: rotate(-8deg); }
+      /* ---------- beat 7 ---------- */
+      #b7-stage { align-items: center; justify-content: center; gap: 90px; }
+      #b7-left { width: 720px; }
+      #b7-left .beat-title { margin: 28px 0 26px; font-size: 80px; }
+      #cal-card { width: 620px; padding: 50px; text-align: center; }
+      #cal-card .cal-head { font-family: "Space Grotesk", sans-serif; font-size: 24px; letter-spacing: 0.2em; color: #9db4bc; }
+      #cal-card .cal-conf { font-family: "DejaVu Sans Mono", monospace; font-size: 64px; font-weight: 700; color: #2ee6a8; margin: 26px 0 10px; letter-spacing: 0.06em; }
+      #cal-card .cal-sub { font-size: 22px; color: #dfe9e7; }
+      #cal-card .cal-rem { margin-top: 30px; padding-top: 26px; border-top: 1px solid rgba(148,178,190,0.12); display: flex; gap: 14px; justify-content: center; }
+      #b7-tools { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+      /* ---------- beat 8 ---------- */
+      #b8a { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      #b8a .beat-title { font-size: 72px; margin: 26px 0 56px; }
+      #stats { display: flex; gap: 60px; }
+      .stat { width: 380px; padding: 44px 20px; }
+      .stat .num { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 96px; color: #2ee6a8; letter-spacing: -0.02em; }
+      .stat .lbl { font-size: 24px; color: #9db4bc; margin-top: 12px; line-height: 1.4; }
+      #b8-breakdown { margin-top: 54px; display: flex; gap: 16px; }
+      #b8b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 80px; }
+      #honest-card { width: 760px; padding: 52px 56px; }
+      #honest-card h3 { font-family: "Space Grotesk", sans-serif; font-size: 34px; font-weight: 700; margin-bottom: 26px; }
+      .honest-row { display: flex; align-items: center; gap: 16px; font-size: 25px; color: #dfe9e7; padding: 13px 0; }
+      .honest-row .x { color: #ff8f8f; font-weight: 700; }
+      .honest-row .ok { color: #2ee6a8; font-weight: 700; }
+      #b8b-right { width: 640px; }
+      #term-card { padding: 44px 48px; background: #070d16; }
+      #term-card .tline { font-family: "DejaVu Sans Mono", monospace; font-size: 30px; color: #eaf2f1; }
+      #term-card .tline .prompt { color: #2ee6a8; }
+      #term-card .tok { font-family: "DejaVu Sans Mono", monospace; font-size: 22px; color: #7d9299; margin-top: 18px; }
+      #b8-cta { margin-top: 30px; font-size: 24px; color: #9db4bc; line-height: 1.5; }
+      #b8-cta strong { color: #eaf2f1; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="82.99" data-width="1920" data-height="1080">
+
+      <!-- ================= BEAT 1 : pain (0 – 9.2) ================= -->
+      <section id="beat1" class="clip" data-start="0" data-duration="9.2" data-track-index="0">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b1-glow" style="left:-260px; top:-260px;"></div>
+          <div class="gring" id="b1-gr1" data-layout-allow-overflow style="width:720px; height:720px; right:-200px; top:220px;"></div>
+          <div class="gring alt" id="b1-gr2" data-layout-allow-overflow style="width:420px; height:420px; left:-150px; bottom:-140px;"></div>
+        </div>
+        <div class="stage">
+          <div id="b1-left" class="fadeout">
+            <div class="kicker b1-rise">The problem</div>
+            <h1 class="beat-title b1-rise">Getting a building permit is a maze.</h1>
+            <p class="beat-sub b1-rise">Every city has <strong>different requirements</strong>, buried in <strong>PDFs and portal FAQs</strong>.</p>
+          </div>
+          <div id="b1-pdfs" class="fadeout">
+            <div class="pdfcard b1-rise"><div class="pdfbadge">PDF</div><div><div class="pdffile">city-code.pdf</div><div class="pdfmeta">setbacks · height limits · zoning</div></div></div>
+            <div class="pdfcard b1-rise"><div class="pdfbadge">PDF</div><div><div class="pdfmeta">fees · forms · office hours</div></div></div>
+            <div class="pdfcard b1-rise"><div class="pdfbadge">PDF</div><div><div class="pdffile">fee-schedule.pdf</div><div class="pdfmeta">plan review · inspections</div></div></div>
+          </div>
+          <div id="b1-chips" class="fadeout">
+            <div class="chip b1-rise"><span class="dot"></span>$500–$2,000 expediter fees</div>
+            <div class="chip b1-rise"><span class="dot"></span>weeks lost to corrections</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 2 : meet permit pal (9.2 – 19.2) ================= -->
+      <section id="beat2" class="clip" data-start="9.2" data-duration="10" data-track-index="1">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b2-glow" style="left:510px; top:-320px;"></div>
+          <div class="gring" id="b2-gr1" data-layout-allow-overflow style="width:620px; height:620px; left:-190px; top:120px;"></div>
+          <div class="gring alt" id="b2-gr2" data-layout-allow-overflow style="width:380px; height:380px; right:-120px; bottom:-100px;"></div>
+          <div id="orbit">
+            <div class="orbit-ring" data-layout-allow-overflow></div>
+            <div class="orbit-dot" style="left:372px; top:-8px;"></div>
+            <div class="orbit-dot" style="left:752px; top:372px;"></div>
+            <div class="orbit-dot" style="left:372px; top:752px;"></div>
+            <div class="orbit-dot" style="left:-8px; top:372px;"></div>
+          </div>
+        </div>
+        <div class="stage fadeout" id="b2-stage">
+          <svg id="b2-mark" class="b2-rise" viewBox="0 0 120 120" fill="none">
+            <path d="M60 12 L110 56 H92 V104 H28 V56 H10 Z" stroke="#2ee6a8" stroke-width="7" stroke-linejoin="round"/>
+            <rect x="48" y="70" width="24" height="34" rx="3" fill="#2ee6a8" opacity="0.85"/>
+          </svg>
+          <div id="b2-title" class="b2-rise">Permit <span class="accent">Pal</span></div>
+          <p id="b2-sub" class="b2-rise">A <strong>background multi-agent system</strong> on the <strong>Strands Agents SDK</strong> that shepherds a homeowner through the whole application — <strong>end to end</strong>.</p>
+          <div id="b2-chips">
+            <div class="chip b2-rise"><span class="dot"></span>background, not a chatbot</div>
+            <div class="chip b2-rise"><span class="dot"></span>human approves every critical step</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 3 : architecture (19.2 – 31.4) ================= -->
+      <section id="beat3" class="clip" data-start="19.2" data-duration="12.2" data-track-index="2">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b3-glow" style="right:-260px; top:-260px;"></div>
+        </div>
+        <div class="stage fadeout" id="b3-stage">
+          <div class="kicker b3-rise">Architecture</div>
+          <h1 class="beat-title b3-rise">One orchestrator. Three specialists.</h1>
+          <div id="b3-card" class="b3-rise">
+            <div id="b3-kburn"><img id="b3-diagram" data-layout-allow-overflow src="assets/architecture.webp" alt="Permit Pal multi-agent architecture diagram" /></div>
+          </div>
+          <div id="b3-chips">
+            <div class="chip b3-rise"><span class="dot"></span>agents-as-tools</div>
+            <div class="chip b3-rise"><span class="dot"></span>narrowly scoped toolsets</div>
+            <div class="chip b3-rise"><span class="dot"></span>delegates &amp; gates — never touches the data</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 4 : phase 1 research (31.4 – 38.92) ================= -->
+      <section id="beat4" class="clip" data-start="31.4" data-duration="7.52" data-track-index="3">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b4-glow" style="left:-260px; bottom:-320px;"></div>
+          <div class="gring" id="b4-gr1" data-layout-allow-overflow style="width:560px; height:560px; right:-170px; top:90px;"></div>
+          <div class="gring alt" id="b4-gr2" data-layout-allow-overflow style="width:340px; height:340px; left:-120px; bottom:-110px;"></div>
+        </div>
+        <div class="stage fadeout" id="b4-stage">
+          <div id="b4-left">
+            <div class="kicker b4-rise">Phase 01 — Research</div>
+            <h1 class="beat-title b4-rise">Austin's requirements, looked up.</h1>
+            <p class="beat-sub b4-rise">The research agent queries the permit knowledge base for a <strong>320 sq ft deck addition</strong> in <strong>Austin, TX</strong>.</p>
+            <div id="b4-tool" class="b4-rise"><span class="toolchip">lookup_permit_requirements</span></div>
+          </div>
+          <div id="kb-card" class="card b4-rise">
+            <h3>Permit knowledge base</h3>
+            <div class="kb-sub">austin-tx · deck-addition · 320 sq ft</div>
+            <div class="reqrow"><span class="tick">✓</span>Residential building permit<span class="rid">AUS-DECK-01</span></div>
+            <div class="reqrow"><span class="tick">✓</span>Site plan — lot lines, setbacks<span class="rid">required</span></div>
+            <div class="reqrow"><span class="tick">✓</span>Construction drawings<span class="rid">required</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 5 : governance (38.92 – 46.63) ================= -->
+      <section id="beat5" class="clip" data-start="38.92" data-duration="7.71" data-track-index="4">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b5-glow" style="left:510px; bottom:-380px;"></div>
+          <div class="gring" id="b5-gr1" data-layout-allow-overflow style="width:640px; height:640px; left:-200px; top:60px;"></div>
+          <div class="gring alt" id="b5-gr2" data-layout-allow-overflow style="width:400px; height:400px; right:-140px; bottom:-120px;"></div>
+        </div>
+        <div class="stage fadeout" id="b5-stage">
+          <div class="kicker b5-rise" style="color:#f5b942;">Human in the loop</div>
+          <h1 class="beat-title b5-rise">Nothing advances without the homeowner.</h1>
+          <div id="gates">
+            <div class="gate b5-rise"><div class="gnum">GATE 1</div><div class="gname">Approval</div><div class="gflow">research → docs</div></div>
+            <div class="gate-arrow b5-rise">→</div>
+            <div class="gate b5-rise"><div class="gnum">GATE 2</div><div class="gname">Approval</div><div class="gflow">docs → schedule</div></div>
+            <div class="gate-arrow b5-rise">→</div>
+            <div class="gate b5-rise"><div class="gnum">GATE 3</div><div class="gname">Approval</div><div class="gflow">schedule → submit</div></div>
+          </div>
+          <div id="b5-note">
+            <div class="chip amber b5-rise"><span class="dot"></span>approvals are first-class tools</div>
+            <div class="chip amber b5-rise"><span class="dot"></span>demo auto-approves with a loud banner</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 6 : phase 2 docs (46.63 – 55.35) ================= -->
+      <section id="beat6" class="clip" data-start="46.63" data-duration="8.72" data-track-index="5">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b6-glow" style="right:-260px; bottom:-320px;"></div>
+          <div class="gring" id="b6-gr1" data-layout-allow-overflow style="width:600px; height:600px; left:-190px; top:100px;"></div>
+          <div class="gring alt" id="b6-gr2" data-layout-allow-overflow style="width:360px; height:360px; right:-120px; bottom:-110px;"></div>
+        </div>
+        <div class="stage fadeout" id="b6-stage">
+          <div id="b6-left">
+            <div class="kicker b6-rise">Phase 02 — Docs</div>
+            <h1 class="beat-title b6-rise">Checklist. Packet. Validated.</h1>
+            <div id="b6-checks" class="b6-rise">
+              <div class="checkrow"><span class="box">✓</span><span class="tname">assemble_checklist</span></div>
+              <div class="checkrow"><span class="box">✓</span><span class="tname">generate_application_packet</span></div>
+              <div class="checkrow"><span class="box">✓</span><span class="tname">validate_packet</span></div>
+            </div>
+          </div>
+          <div id="packet-card" class="card b6-rise">
+            <div id="pass-stamp"><span class="tilt">PASS</span></div>
+            <div class="fname">permit-packet-austin-tx-deck-addition.md</div>
+            <div class="fmeta">a real application-packet file, written to disk</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 7 : phase 3 scheduler (55.35 – 63.52) ================= -->
+      <section id="beat7" class="clip" data-start="55.35" data-duration="8.17" data-track-index="6">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b7-glow" style="left:-260px; top:-260px;"></div>
+          <div class="gring" id="b7-gr1" data-layout-allow-overflow style="width:660px; height:660px; right:-200px; top:80px;"></div>
+          <div class="gring alt" id="b7-gr2" data-layout-allow-overflow style="width:380px; height:380px; left:-130px; bottom:-110px;"></div>
+        </div>
+        <div class="stage fadeout" id="b7-stage">
+          <div id="b7-left">
+            <div class="kicker b7-rise">Phase 03 — Scheduler</div>
+            <h1 class="beat-title b7-rise">Inspection booked. Reminders set.</h1>
+            <p class="beat-sub b7-rise">The scheduler finds inspection windows, books the inspection — then the <strong>final approval gate</strong> fires before submission.</p>
+            <div id="b7-tools">
+              <span class="toolchip b7-rise">get_inspection_windows</span>
+              <span class="toolchip b7-rise">book_inspection</span>
+              <span class="toolchip b7-rise">add_deadline_reminder</span>
+            </div>
+          </div>
+          <div id="cal-card" class="card b7-rise">
+            <div class="cal-head">INSPECTION CONFIRMED</div>
+            <div class="cal-conf">PP-XXXXXX</div>
+            <div class="cal-sub">mock booking · deterministic</div>
+            <div class="cal-rem">
+              <div class="chip"><span class="dot"></span>footing reminder</div>
+              <div class="chip"><span class="dot"></span>framing reminder</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BEAT 8 : proof (63.52 – 82.99) ================= -->
+      <section id="beat8" class="clip" data-start="63.52" data-duration="19.47" data-track-index="7">
+        <div class="decor">
+          <div class="gridbg"></div>
+          <div class="glow" id="b8-glow" style="left:510px; top:-320px;"></div>
+          <div class="gring" id="b8-gr1" data-layout-allow-overflow style="width:700px; height:700px; left:-210px; top:60px;"></div>
+          <div class="gring alt" id="b8-gr2" data-layout-allow-overflow style="width:420px; height:420px; right:-140px; bottom:-120px;"></div>
+        </div>
+        <div id="b8a">
+          <div class="kicker b8a-rise">The proof</div>
+          <h1 class="beat-title b8a-rise">Audited. Approved. Evaluated.</h1>
+          <div id="stats">
+            <div class="stat card b8a-rise"><div class="num">13</div><div class="lbl">step tool-call<br/>audit trail</div></div>
+            <div class="stat card b8a-rise"><div class="num">3/3</div><div class="lbl">human<br/>approvals</div></div>
+            <div class="stat card b8a-rise"><div class="num">29/29</div><div class="lbl">eval cases<br/>passed</div></div>
+          </div>
+          <div id="b8-breakdown">
+            <div class="chip b8a-rise"><span class="dot"></span>routing 15/15 unit · 3/3 integration</div>
+            <div class="chip b8a-rise"><span class="dot"></span>completeness 6/6</div>
+            <div class="chip b8a-rise"><span class="dot"></span>gating 5/5</div>
+          </div>
+        </div>
+        <div id="b8b" style="opacity:0;">
+          <div id="honest-card" class="card b8b-rise">
+            <h3>The honest part</h3>
+            <div class="honest-row"><span class="x">✕</span>no LLM calls in the demo</div>
+            <div class="honest-row"><span class="x">✕</span>no AWS credentials needed</div>
+            <div class="honest-row"><span class="ok">→</span>deterministic heuristic model — fully reproducible</div>
+            <div class="honest-row"><span class="ok">→</span>same agents &amp; evals swap to a live Bedrock model</div>
+          </div>
+          <div id="b8b-right">
+            <div id="term-card" class="card b8b-rise">
+              <div class="tline"><span class="prompt">$ </span>.venv/bin/python demo.py</div>
+              <div class="tok">one command · end-to-end demo</div>
+            </div>
+            <p id="b8-cta" class="b8b-rise">Run it. Read the <strong>13-step trace</strong>. Re-run the <strong>29 evals</strong>.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // ---------- beat 1 (0 – 9.2) ----------
+      tl.fromTo(".b1-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.1 }, 0.15);
+      tl.fromTo("#b1-gr1", { x: 50, y: 0 }, { x: -50, y: 34, duration: 9.2, ease: "none" }, 0);
+      tl.fromTo("#b1-gr2", { x: -36, y: 0 }, { x: 36, y: -28, duration: 9.2, ease: "none" }, 0);
+      tl.fromTo("#b1-glow", { x: 0, y: 0 }, { x: 120, y: 90, duration: 9.2, ease: "sine.inOut" }, 0);
+      tl.fromTo("#b1-pdfs .pdfcard", { x: 60 }, { x: 0, duration: 9.2, ease: "none", stagger: { each: 0, from: "start" } }, 0);
+      tl.to("#beat1 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 8.9);
+
+      // ---------- beat 2 (9.2 – 19.2) ----------
+      tl.fromTo(".b2-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.12 }, 9.35);
+      tl.fromTo("#orbit", { rotation: 0 }, { rotation: 120, duration: 10, ease: "none" }, 9.2);
+      tl.fromTo("#b2-gr1", { x: -40, y: 0 }, { x: 40, y: 30, duration: 10, ease: "none" }, 9.2);
+      tl.fromTo("#b2-gr2", { x: 34, y: 0 }, { x: -34, y: -26, duration: 10, ease: "none" }, 9.2);
+      tl.fromTo("#b2-glow", { x: 0, y: 0 }, { x: -100, y: 80, duration: 10, ease: "sine.inOut" }, 9.2);
+      tl.to("#beat2 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 18.9);
+
+      // ---------- beat 3 (19.2 – 31.4) ----------
+      tl.fromTo(".b3-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.12 }, 19.35);
+      tl.fromTo("#b3-diagram", { scale: 1 }, { scale: 1.045, duration: 12.2, ease: "none" }, 19.2);
+      tl.fromTo("#b3-glow", { x: 0, y: 0 }, { x: -120, y: 100, duration: 12.2, ease: "sine.inOut" }, 19.2);
+      tl.to("#beat3 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 31.1);
+
+      // ---------- beat 4 (31.4 – 38.92) ----------
+      tl.fromTo(".b4-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: "power3.out", stagger: 0.1 }, 31.55);
+      tl.fromTo("#b4-gr1", { x: 44, y: 0 }, { x: -44, y: 28, duration: 7.52, ease: "none" }, 31.4);
+      tl.fromTo("#b4-gr2", { x: -32, y: 0 }, { x: 32, y: -24, duration: 7.52, ease: "none" }, 31.4);
+      tl.fromTo("#b4-glow", { x: 0, y: 0 }, { x: 100, y: -70, duration: 7.52, ease: "sine.inOut" }, 31.4);
+      tl.to("#beat4 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 38.62);
+
+      // ---------- beat 5 (38.92 – 46.63) ----------
+      tl.fromTo(".b5-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: "power3.out", stagger: 0.09 }, 39.07);
+      tl.fromTo("#b5-gr1", { x: -40, y: 0 }, { x: 40, y: 30, duration: 7.71, ease: "none" }, 38.92);
+      tl.fromTo("#b5-gr2", { x: 34, y: 0 }, { x: -34, y: -26, duration: 7.71, ease: "none" }, 38.92);
+      tl.fromTo("#b5-glow", { x: 0, y: 0 }, { x: 90, y: -60, duration: 7.71, ease: "sine.inOut" }, 38.92);
+      tl.to("#beat5 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 46.33);
+
+      // ---------- beat 6 (46.63 – 55.35) ----------
+      tl.fromTo(".b6-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: "power3.out", stagger: 0.1 }, 46.78);
+      tl.fromTo("#pass-stamp", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2)" }, 50.4);
+      tl.fromTo("#b6-gr1", { x: 44, y: 0 }, { x: -44, y: 30, duration: 8.72, ease: "none" }, 46.63);
+      tl.fromTo("#b6-gr2", { x: -34, y: 0 }, { x: 34, y: -26, duration: 8.72, ease: "none" }, 46.63);
+      tl.fromTo("#b6-glow", { x: 0, y: 0 }, { x: -100, y: -80, duration: 8.72, ease: "sine.inOut" }, 46.63);
+      tl.to("#beat6 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 55.05);
+
+      // ---------- beat 7 (55.35 – 63.52) ----------
+      tl.fromTo(".b7-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: "power3.out", stagger: 0.1 }, 55.5);
+      tl.fromTo("#b7-gr1", { x: -42, y: 0 }, { x: 42, y: 30, duration: 8.17, ease: "none" }, 55.35);
+      tl.fromTo("#b7-gr2", { x: 34, y: 0 }, { x: -34, y: -24, duration: 8.17, ease: "none" }, 55.35);
+      tl.fromTo("#b7-glow", { x: 0, y: 0 }, { x: 110, y: 70, duration: 8.17, ease: "sine.inOut" }, 55.35);
+      tl.to("#beat7 .fadeout", { opacity: 0, duration: 0.3, ease: "power2.in" }, 63.22);
+
+      // ---------- beat 8 (63.52 – 82.99) ----------
+      tl.fromTo(".b8a-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.12 }, 63.67);
+      tl.fromTo("#b8-gr1", { x: 50, y: 0 }, { x: -50, y: 36, duration: 19.47, ease: "none" }, 63.52);
+      tl.fromTo("#b8-gr2", { x: -40, y: 0 }, { x: 40, y: -30, duration: 19.47, ease: "none" }, 63.52);
+      tl.fromTo("#b8-glow", { x: 0, y: 0 }, { x: -120, y: 90, duration: 19.47, ease: "sine.inOut" }, 63.52);
+      // sub-scene: stats out, honest + CTA in
+      tl.to("#b8a", { opacity: 0, y: -30, duration: 0.5, ease: "power2.in" }, 72.9);
+      tl.fromTo("#b8b", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 73.5);
+      tl.fromTo(".b8b-rise", { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.12 }, 73.6);
+      tl.to("#b8b", { opacity: 0, duration: 0.4, ease: "power2.in" }, 82.59);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
