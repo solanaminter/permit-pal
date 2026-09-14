@@ -4,7 +4,7 @@
 
 ## Demo
 
-Watch the narrated explainer — how Permit Pal works, end to end (~75 seconds):
+Watch the narrated explainer — how Permit Pal works, end to end (~83 seconds):
 
 [Watch the demo video](https://github.com/solanaminter/permit-pal/blob/master/assets/permit-pal-demo.mp4)
 
